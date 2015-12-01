@@ -253,9 +253,37 @@ public class Main {
             }
         }
 
-        // replace headers
-        List<XWPFHeader> headers = document.getHeaderList();
-        for (XWPFHeader header : headers) {
+        // replace headers paragraphs
+        List<XWPFHeader> headers_paragraph = document.getHeaderList();
+        for (XWPFHeader header : headers_paragraph) {
+            List<XWPFParagraph> paragraphs = header.getParagraphs();
+            for (XWPFParagraph paragraph : paragraphs) {
+                //String s = paragraph.getParagraphText();
+                Iterator<String> iterator = rules.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
+                    List<XWPFRun> runs = paragraph.getRuns();
+                    for (XWPFRun run : runs) {
+                        String text = run.getText(0);
+                        if (text != null) {
+                            boolean isSetText = false;
+                            if (text.indexOf(key) != -1) {
+                                isSetText = true;
+                                text = text.replace(key, rules.get(key));
+                            }
+                            if (isSetText) {
+                                //参数0表示生成的文字是要从哪一个地方开始放置,设置文字从位置0开始,就可以把原来的文字全部替换掉了
+                                run.setText(text, 0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // replace headers tables
+        List<XWPFHeader> headers_table = document.getHeaderList();
+        for (XWPFHeader header : headers_table) {
             List<XWPFTable> tables = header.getTables();
             for (XWPFTable table : tables) {
                 List<XWPFTableRow> rows = table.getRows();
