@@ -281,6 +281,7 @@ public class Main {
             }
         }
 
+
         // replace headers tables
         List<XWPFHeader> headers_table = document.getHeaderList();
         for (XWPFHeader header : headers_table) {
